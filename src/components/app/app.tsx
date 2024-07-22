@@ -19,6 +19,7 @@ import { useDispatch } from '../../services/store';
 import { getUser } from '../../services/userSlice';
 import { ProtectedRoute } from '../protected-route/protected-route';
 import { getIngredients } from '../../services/ingridientsSlice';
+import { refreshToken } from '@api';
 
 const App = () => {
   const location = useLocation();

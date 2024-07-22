@@ -18,13 +18,13 @@ export const OrderInfo: FC = () => {
   const orderData = useSelector(openedOrderselector);
   const ingredients: TIngredient[] = useSelector(ingredientsSelector);
 
+  useEffect(() => {
+    if (number) {
+      dispatch(getOrder(parseInt(number)));
+    }
+  }, []);
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
-    useEffect(() => {
-      if (number) {
-        dispatch(getOrder(parseInt(number)));
-      }
-    }, []);
     if (!orderData || !ingredients.length) return null;
 
     const date = new Date(orderData.createdAt);
