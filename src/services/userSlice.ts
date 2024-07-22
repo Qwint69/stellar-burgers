@@ -80,6 +80,7 @@ export const userSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isAuthChecked = true;
         state.loginUserError = '';
+        state.user = action.payload.user;
 
         setCookie('accessToken', action.payload.accessToken);
         setCookie('refreshToken', action.payload.refreshToken);
