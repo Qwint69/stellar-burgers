@@ -172,6 +172,7 @@ export const loginUserApi = (data: TLoginData) =>
   })
     .then((res) => checkResponse<TAuthResponse>(res))
     .then((data) => {
+      console.log(data, 'here');
       if (data?.success) return data;
       return Promise.reject(data);
     });
