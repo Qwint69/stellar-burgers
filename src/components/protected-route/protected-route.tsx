@@ -19,7 +19,6 @@ export const ProtectedRoute = ({
   const location = useLocation();
 
   if (!onlyUnAuth && !isAuthChecked) {
-    console.log('i am here');
     return <Navigate replace to='/login' state={{ from: location }} />;
   }
 
