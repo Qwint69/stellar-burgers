@@ -1,10 +1,6 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  nanoid,
-  PayloadAction
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
+import { nanoid } from 'nanoid';
 
 export type TConstructorState = {
   bun: TConstructorIngredient | null;
@@ -51,7 +47,7 @@ export const constructorSlice = createSlice({
       const index = state.ingredients.findIndex(
         (ingredient) => ingredient._id === action.payload._id
       );
-      if (index > 0 && index < state.ingredients.length - 1) {
+      if (index >= 0 && index < state.ingredients.length - 1) {
         let temp = state.ingredients[index];
         state.ingredients[index] = state.ingredients[index + 1];
         state.ingredients[index + 1] = temp;
