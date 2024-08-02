@@ -70,20 +70,15 @@ export const ordersSlice = createSlice({
       })
       .addCase(getOrder.fulfilled, (state, action) => {
         state.openedOrder = action.payload.orders[0];
-        state.openedOrderRequest = false;
       })
       .addCase(getOrders.pending, (state) => {
-        state.openedOrderRequest = false;
+        state.openedOrderRequest = true;
       })
       .addCase(getOrders.rejected, (state, action) => {
         state.errorMessage = action.error.message;
       })
       .addCase(getOrders.fulfilled, (state, action) => {
-        if (state.orders !== null) {
-          state.orders = action.payload;
-        } else {
-          state.orders = action.payload;
-        }
+        state.orders = action.payload;
       });
   }
 });

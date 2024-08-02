@@ -76,3 +76,4 @@ describe('Order test', () => {
     cy.get('[data-testid=bunBottom]').contains('Выберите булки');
   });
 });
+
