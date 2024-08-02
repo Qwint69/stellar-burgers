@@ -10,7 +10,6 @@ import {
   getOrder
 } from '../../services/ordersSlice';
 import { useLocation, useParams } from 'react-router-dom';
-import { getOrderByNumberApi } from '@api';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
@@ -24,7 +23,6 @@ export const OrderInfo: FC = () => {
       dispatch(getOrder(parseInt(number)));
     }
   }, []);
-
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
