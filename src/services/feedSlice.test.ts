@@ -3,6 +3,12 @@ import { feedSlice, getFeeds } from './feedSlice';
 import { getFeedsApi } from '@api';
 
 describe('Feeds test', () => {
+  const initialState = {
+    orders: [],
+    total: 0,
+    totalToday: 0,
+    isLoading: false
+  };
   const order1 = {
     _id: '1',
     status: 'ready',
@@ -42,7 +48,14 @@ describe('Feeds test', () => {
       reducer: feedSlice.reducer
     });
 
-    await store.dispatch(getFeeds());
+    const promiseDispatch = store.dispatch(getFeeds());
+    const expectedLoadingResult = {
+      isLoading: true
+    };
+
+    const loadingState = store.getState();
+    expect(loadingState).toEqual({ ...initialState, ...expectedLoadingResult });
+    await promiseDispatch;
 
     const state = store.getState();
 

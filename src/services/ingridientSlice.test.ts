@@ -2,6 +2,10 @@ import { configureStore } from '@reduxjs/toolkit';
 import { getIngredients, ingredientsSlice } from './ingridientsSlice';
 
 describe('Ingredients test', () => {
+  const initialState = {
+    ingredients: [],
+    loading: false
+  };
   const ingredient1 = {
     _id: '1',
     name: 'Test Ingredient 1',
@@ -49,8 +53,16 @@ describe('Ingredients test', () => {
       reducer: ingredientsSlice.reducer
     });
 
-    await store.dispatch(getIngredients());
-
+    const dispatchPromise = store.dispatch(getIngredients());
+    const expectedLoadingResult = {
+      loading: true
+    };
+    const loadingState = store.getState();
+    expect(loadingState).toEqual({
+      ...initialState,
+      ...expectedLoadingResult
+    });
+    await dispatchPromise;
     const state = store.getState();
 
     expect(state).toEqual(expectedResult);

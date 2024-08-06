@@ -14,6 +14,15 @@ describe('UserSlice test', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+  const initialState = {
+    isAuthChecked: false,
+    loginUserError: '',
+    loginUserRequest: false,
+    user: {
+      email: '',
+      name: ''
+    }
+  };
   const user = {
     email: 'test@mail.ru',
     name: 'test'
@@ -59,8 +68,16 @@ describe('UserSlice test', () => {
       }
     });
 
-    await store.dispatch(register(registerData));
-
+    const dispatchPromise = store.dispatch(register(registerData));
+    const expectedLoadingResult = {
+      loginUserRequest: true
+    };
+    const loadingState = store.getState().user;
+    expect(loadingState).toEqual({
+      ...initialState,
+      ...expectedLoadingResult
+    });
+    await dispatchPromise;
     const state = store.getState().user;
 
     expect(state).toEqual(expectedResult);
@@ -70,7 +87,7 @@ describe('UserSlice test', () => {
     const expectedResult = {
       isAuthChecked: true,
       loginUserError: '',
-      loginUserRequest: false,
+      loginUserRequest: true,
       user: user
     };
 
@@ -98,7 +115,16 @@ describe('UserSlice test', () => {
       }
     });
 
-    await store.dispatch(login(loginData));
+    const dispatchPromise = store.dispatch(login(loginData));
+    const expectedLoadingResult = {
+      loginUserRequest: true
+    };
+    const loadingState = store.getState().user;
+    expect(loadingState).toEqual({
+      ...initialState,
+      ...expectedLoadingResult
+    });
+    await dispatchPromise;
 
     const state = store.getState().user;
 

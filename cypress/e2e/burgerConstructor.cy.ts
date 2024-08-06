@@ -14,6 +14,10 @@ describe('burgerConstructor adding ingredients test', () => {
     cy.clearCookies();
   });
   it('should add ingredient into constructor', () => {
+    cy.get('[data-testid=bunTop]').contains('Выберите булки');
+    cy.get('[data-testid=mainMiddle]').contains('Выберите начинку');
+    cy.get('[data-testid=bunBottom]').contains('Выберите булки');
+
     cy.get('@bun').contains('Добавить').click();
     cy.get('@main').contains('Добавить').click();
     cy.get('@sauce').contains('Добавить').click();
@@ -27,6 +31,8 @@ describe('burgerConstructor adding ingredients test', () => {
   });
 
   it('should check work of modal window of ingredient', () => {
+    cy.get('#modals').should('be.empty');
+
     cy.contains('Краторная булка N-200i').click();
 
     cy.get('#modals').find('button').click();

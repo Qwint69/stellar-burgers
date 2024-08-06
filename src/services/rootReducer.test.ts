@@ -1,24 +1,22 @@
-import { combineReducers } from 'redux';
 import { constructorSlice } from './constructorSlice';
 import { feedSlice } from './feedSlice';
 import { ingredientsSlice } from './ingridientsSlice';
 import { ordersSlice } from './ordersSlice';
-import { userSlice } from './userSlice';
 import { rootReducer } from './store';
+import { userSlice } from './userSlice';
 
-describe('rootReducer test', () => {
-  it('should initialize with the correct slices', () => {
-    const expectedReducerShape = combineReducers({
-      [userSlice.name]: userSlice.reducer,
-      [constructorSlice.name]: constructorSlice.reducer,
-      [ordersSlice.name]: ordersSlice.reducer,
-      [ingredientsSlice.name]: ingredientsSlice.reducer,
-      [feedSlice.name]: feedSlice.reducer
-    });
+describe('rootReducer', () => {
+  it('should return the initial state with an unknown action', () => {
+    const initialState = rootReducer(undefined, { type: 'UNKNOWN_ACTION' });
 
-    const rootReducerString = rootReducer.toString();
-    const expectedReducerShapeString = expectedReducerShape.toString();
+    const expectedState = {
+      [userSlice.name]: userSlice.reducer(undefined, { type: 'UNKNOWN_ACTION' }),
+      [constructorSlice.name]: constructorSlice.reducer(undefined, { type: 'UNKNOWN_ACTION' }),
+      [ordersSlice.name]: ordersSlice.reducer(undefined, { type: 'UNKNOWN_ACTION' }),
+      [ingredientsSlice.name]: ingredientsSlice.reducer(undefined, { type: 'UNKNOWN_ACTION' }),
+      [feedSlice.name]: feedSlice.reducer(undefined, { type: 'UNKNOWN_ACTION' })
+    };
 
-    expect(rootReducerString).toEqual(expectedReducerShapeString);
+    expect(initialState).toEqual(expectedState);
   });
 });

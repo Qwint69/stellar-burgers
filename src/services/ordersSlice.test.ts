@@ -10,6 +10,15 @@ import { redirect } from 'react-router-dom';
 import { getOrdersApi } from '@api';
 import * as cookies from '../utils/cookie';
 
+const initialState = {
+  orders: null,
+  currentOrderRequest: false,
+  openedOrderRequest: false,
+  errorMessage: undefined,
+  currentOrder: null,
+  openedOrder: null
+};
+
 const order1 = {
   _id: '1',
   status: 'ready',
@@ -88,8 +97,13 @@ describe('orderSlice action tests', () => {
       }
     });
 
-    await store.dispatch(getOrder(1));
-
+    const promiseDispatch = store.dispatch(getOrder(1));
+    const expectedLoadingResult = {
+      openedOrderRequest: true
+    };
+    const loadingState = store.getState().orders;
+    expect(loadingState).toEqual({ ...initialState, ...expectedLoadingResult });
+    await promiseDispatch;
     const state = store.getState().orders;
 
     expect(state).toEqual(expectedResult);
@@ -120,7 +134,16 @@ describe('orderSlice action tests', () => {
       }
     });
 
-    await store.dispatch(createOrder(['bun', 'main', 'sauce']));
+    const promiseDispatch = store.dispatch(
+      createOrder(['bun', 'main', 'sauce'])
+    );
+    const expectedLoadingResult = {
+      currentOrderRequest: true
+    };
+
+    const loadingState = store.getState().orders;
+    expect(loadingState).toEqual({ ...initialState, ...expectedLoadingResult });
+    await promiseDispatch;
 
     const state = store.getState().orders;
 
@@ -129,14 +152,6 @@ describe('orderSlice action tests', () => {
 });
 
 describe('orderSlice reducers test', () => {
-  const initialState = {
-    orders: null,
-    currentOrderRequest: false,
-    openedOrderRequest: false,
-    errorMessage: undefined,
-    currentOrder: null,
-    openedOrder: null
-  };
   it('should reset order', async () => {
     const expectedResult = {
       orders: [order1],
@@ -167,6 +182,7 @@ describe('orderSlice reducers test', () => {
     const stateWithOrder = store.getState().orders;
 
     expect(stateWithOrder).toEqual(expectedResult);
+
     store.dispatch(resetOrder());
     const state = store.getState().orders;
 
