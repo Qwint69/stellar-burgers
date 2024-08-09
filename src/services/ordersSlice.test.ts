@@ -150,6 +150,133 @@ describe('orderSlice action tests', () => {
     expect(state).toEqual(expectedResult);
   });
 });
+describe('orderSlice rejection tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should handle rejection when creating an order', async () => {
+    const errorMessage = 'Failed to create order';
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            success: false,
+            message: errorMessage
+          })
+      })
+    ) as jest.Mock;
+
+    jest.spyOn(cookies, 'getCookie').mockReturnValue('mockAccessToken');
+
+    const store = configureStore({
+      reducer: {
+        orders: ordersSlice.reducer
+      }
+    });
+
+    const promiseDispatch = store.dispatch(
+      createOrder(['bun', 'main', 'sauce'])
+    );
+
+    const expectedLoadingState = {
+      ...initialState,
+      currentOrderRequest: true
+    };
+    expect(store.getState().orders).toEqual(expectedLoadingState);
+
+    await promiseDispatch;
+
+    const state = store.getState().orders;
+    expect(state).toEqual({
+      ...initialState,
+      errorMessage: errorMessage
+    });
+  });
+
+  it('should handle rejection when fetching an order by number', async () => {
+    const errorMessage = 'Failed to fetch order';
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            success: false,
+            message: errorMessage
+          })
+      })
+    ) as jest.Mock;
+
+    jest.spyOn(cookies, 'getCookie').mockReturnValue('mockAccessToken');
+
+    const store = configureStore({
+      reducer: {
+        orders: ordersSlice.reducer
+      }
+    });
+
+    const promiseDispatch = store.dispatch(getOrder(1));
+
+    const expectedLoadingState = {
+      ...initialState,
+      openedOrderRequest: true
+    };
+    expect(store.getState().orders).toEqual(expectedLoadingState);
+
+    await promiseDispatch;
+
+    const state = store.getState().orders;
+    expect(state).toEqual({
+      ...initialState,
+      errorMessage: errorMessage
+    });
+  });
+
+  it('should handle rejection when fetching the order list', async () => {
+    const errorMessage = 'Failed to fetch orders';
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            success: false,
+            message: errorMessage
+          })
+      })
+    ) as jest.Mock;
+
+    jest.spyOn(cookies, 'getCookie').mockReturnValue('mockAccessToken');
+
+    const store = configureStore({
+      reducer: {
+        orders: ordersSlice.reducer
+      }
+    });
+
+    const promiseDispatch = store.dispatch(getOrders());
+
+    const expectedLoadingState = {
+      ...initialState,
+      openedOrderRequest: false
+    };
+    expect(store.getState().orders).toEqual(expectedLoadingState);
+
+    await promiseDispatch;
+
+    const state = store.getState().orders;
+    expect(state).toEqual({
+      ...initialState,
+      errorMessage: errorMessage
+    });
+  });
+});
 
 describe('orderSlice reducers test', () => {
   it('should reset order', async () => {

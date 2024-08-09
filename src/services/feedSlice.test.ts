@@ -61,4 +61,38 @@ describe('Feeds test', () => {
 
     expect(state).toEqual(expectedResult);
   });
+  it('should handle rejection and reset to initial state', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false, 
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            success: false,
+            message: 'Internal Server Error'
+          })
+      })
+    ) as jest.Mock;
+
+    const store = configureStore({
+      reducer: feedSlice.reducer
+    });
+
+    const dispatchPromise = store.dispatch(getFeeds());
+
+    const expectedLoadingResult = {
+      isLoading: true
+    };
+
+    const loadingState = store.getState();
+    expect(loadingState).toEqual({
+      ...initialState,
+      ...expectedLoadingResult
+    });
+
+    await dispatchPromise;
+    const state = store.getState();
+
+    expect(state).toEqual(initialState);
+  });
 });

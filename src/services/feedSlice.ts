@@ -31,6 +31,7 @@ export const feedSlice = createSlice({
       .addCase(getFeeds.pending, (state) => {
         state.isLoading = true;
       })
+      .addCase(getFeeds.rejected, () => initialState)
       .addCase(getFeeds.fulfilled, (state, action) => {
         state.orders = action.payload.orders;
         state.total = action.payload.total;

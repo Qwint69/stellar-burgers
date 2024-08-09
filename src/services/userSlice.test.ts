@@ -206,3 +206,159 @@ describe('UserSlice test', () => {
     expect(state).toEqual(expectedResult);
   });
 });
+describe('UserSlice rejection tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const initialState = {
+    isAuthChecked: false,
+    loginUserError: '',
+    loginUserRequest: false,
+    user: {
+      email: '',
+      name: ''
+    }
+  };
+
+  it('should handle rejection when registering a user', async () => {
+    const errorMessage = 'Failed to register user';
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({ success: false, message: errorMessage })
+      })
+    ) as jest.Mock;
+
+    const store = configureStore({
+      reducer: {
+        user: userSlice.reducer
+      }
+    });
+
+    const dispatchPromise = store.dispatch(register({
+      email: 'test@mail.ru',
+      name: 'test',
+      password: '1223'
+    }));
+
+    const expectedLoadingState = {
+      ...initialState,
+      loginUserRequest: true,
+    };
+    expect(store.getState().user).toEqual(expectedLoadingState);
+
+    await dispatchPromise;
+
+    const state = store.getState().user;
+    expect(state).toEqual({
+      ...initialState,
+      loginUserError: errorMessage,
+      isAuthChecked: true,
+    });
+  });
+
+  it('should handle rejection when logging in a user', async () => {
+    const errorMessage = 'Failed to login user';
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({ success: false, message: errorMessage })
+      })
+    ) as jest.Mock;
+
+    const store = configureStore({
+      reducer: {
+        user: userSlice.reducer
+      }
+    });
+
+    const dispatchPromise = store.dispatch(login({
+      email: 'test@mail.ru',
+      password: '1223'
+    }));
+
+    const expectedLoadingState = {
+      ...initialState,
+      loginUserRequest: true,
+    };
+    expect(store.getState().user).toEqual(expectedLoadingState);
+
+    await dispatchPromise;
+
+    const state = store.getState().user;
+    expect(state).toEqual({
+      ...initialState,
+      loginUserError: errorMessage,
+      isAuthChecked: false,
+    });
+  });
+
+  it('should handle rejection when fetching user data', async () => {
+    const errorMessage = 'Failed to fetch user data';
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({ success: false, message: errorMessage })
+      })
+    ) as jest.Mock;
+
+    jest.spyOn(cookies, 'getCookie').mockReturnValue('mockAccessToken');
+
+    const store = configureStore({
+      reducer: {
+        user: userSlice.reducer
+      }
+    });
+
+    await store.dispatch(getUser());
+
+    const state = store.getState().user;
+    expect(state).toEqual({
+      ...initialState,
+      loginUserError: errorMessage,
+      isAuthChecked: false,
+    });
+  });
+
+  it('should handle rejection when updating user data', async () => {
+    const errorMessage = 'Failed to update user data';
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({ success: false, message: errorMessage })
+      })
+    ) as jest.Mock;
+
+    jest.spyOn(cookies, 'getCookie').mockReturnValue('mockAccessToken');
+
+    const store = configureStore({
+      reducer: {
+        user: userSlice.reducer
+      }
+    });
+
+    const dispatchPromise = store.dispatch(updateUserData({
+      email: 'newemail@mail.ru',
+      name: 'newname',
+      password: 'newpassword'
+    }));
+
+    await dispatchPromise;
+
+    const state = store.getState().user;
+    expect(state).toEqual({
+      ...initialState,
+      loginUserError: errorMessage,
+    });
+  });
+});
+

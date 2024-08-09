@@ -75,6 +75,7 @@ export const userSlice = createSlice({
         state.loginUserError = '';
       })
       .addCase(login.rejected, (state, action) => {
+        state.loginUserRequest = false;
         state.isAuthChecked = false;
         state.loginUserError = action.error.message;
       })
