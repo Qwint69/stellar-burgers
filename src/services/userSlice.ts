@@ -70,10 +70,12 @@ export const userSlice = createSlice({
 
     builder
       .addCase(login.pending, (state) => {
+        state.loginUserRequest = true;
         state.isAuthChecked = false;
         state.loginUserError = '';
       })
       .addCase(login.rejected, (state, action) => {
+        state.loginUserRequest = false;
         state.isAuthChecked = false;
         state.loginUserError = action.error.message;
       })

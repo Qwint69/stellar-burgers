@@ -67,18 +67,24 @@ export const ordersSlice = createSlice({
       })
       .addCase(getOrder.rejected, (state, action) => {
         state.errorMessage = action.error.message;
+        state.openedOrderRequest = false;
       })
       .addCase(getOrder.fulfilled, (state, action) => {
         state.openedOrder = action.payload.orders[0];
+        state.openedOrderRequest = false;
       })
       .addCase(getOrders.pending, (state) => {
-        state.openedOrderRequest = true;
+        state.openedOrderRequest = false;
       })
       .addCase(getOrders.rejected, (state, action) => {
         state.errorMessage = action.error.message;
       })
       .addCase(getOrders.fulfilled, (state, action) => {
-        state.orders = action.payload;
+        if (state.orders !== null) {
+          state.orders = action.payload;
+        } else {
+          state.orders = action.payload;
+        }
       });
   }
 });

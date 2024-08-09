@@ -32,6 +32,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
     ) : (
       <div
         className={`${styles.noBuns} ${styles.noBunsTop} ml-8 mb-4 mr-5 text text_type_main-default`}
+        data-testid={'bunTop'}
       >
         Выберите булки
       </div>
@@ -51,6 +52,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
       ) : (
         <div
           className={`${styles.noBuns} ml-8 mb-4 mr-5 text text_type_main-default`}
+          data-testid={'mainMiddle'}
         >
           Выберите начинку
         </div>
@@ -69,6 +71,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
     ) : (
       <div
         className={`${styles.noBuns} ${styles.noBunsBottom} ml-8 mb-4 mr-5 text text_type_main-default`}
+        data-testid={'bunBottom'}
       >
         Выберите булки
       </div>
